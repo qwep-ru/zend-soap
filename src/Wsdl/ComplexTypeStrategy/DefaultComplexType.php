@@ -69,6 +69,25 @@ class DefaultComplexType extends AbstractComplexTypeStrategy
                     $element->setAttribute('nillable', 'true');
                 }
 
+                $doc = $property->getDocComment();
+                $minOccurs = $maxOccurs = null;
+                if (preg_match('/minOccurs\s*=\s*(\d+|unbounded)/', $doc, $matches)) {
+                    $element->setAttribute('minOccurs', $minOccurs = $matches[1]);
+                }
+                if (preg_match('/maxOccurs\s*=\s*(\d+|unbounded)/', $doc, $matches)) {
+                    $element->setAttribute('maxOccurs', $maxOccurs = $matches[1]);
+                }
+
+                // If minOccurs > 0, then nillable is not allowed
+                if (is_numeric($minOccurs) && $minOccurs > 0) {
+                    $element->setAttribute('nillable', 'false');
+                } else {
+                    // If the default value is null, then this property is nillable.
+                    if ($defaultProperties[$propertyName] === null) {
+                        $element->setAttribute('nillable', 'true');
+                    }
+                }
+
                 $all->appendChild($element);
             }
         }
