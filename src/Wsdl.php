@@ -672,6 +672,9 @@ class Wsdl
             case 'long':
                 return self::XSD_NS . ':long';
 
+            case 'datetime':
+                return self::XSD_NS . ':dateTime';
+
             case 'int':
             case 'integer':
                 return self::XSD_NS . ':int';
